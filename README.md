@@ -1,4 +1,4 @@
-The maintenance of ZOOpt has shift to https://github.com/polixir/ZOOpt . The new version is compatible with [Ray](https://github.com/ray-project/ray).
+The maintenance of ZOOpt has shifted to https://github.com/polixir/ZOOpt . The new version is compatible with [Ray](https://github.com/ray-project/ray).
 
 # ZOOpt
 
