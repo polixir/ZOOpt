@@ -67,16 +67,18 @@ Then, use ZOOpt to optimize a 100-dimension Ackley function:
 
 .. code:: python
 
-    from zoopt import Dimension, Objective, Parameter, Opt
+    from zoopt import Dimension, ValueType, Dimension2, Objective, Parameter, Opt, ExpOpt
 
-    dim = 100  # dimension
-    obj = Objective(ackley, Dimension(dim, [[-1, 1]]*dim, [True]*dim))
+    dim_size = 100  # dimension size
+    dim = Dimension(dim_size, [[-1, 1]]*dim_size, [True]*dim_size)
+    # dim = Dimension2([(ValueType.CONTINUOUS, [-1, 1], 1e-6)]*dim_size)
+    obj = Objective(ackley, dim)
     # perform optimization
-    solution = Opt.min(obj, Parameter(budget=100*dim))
+    solution = Opt.min(obj, Parameter(budget=100*dim_size))
     # print the solution
     print(solution.get_x(), solution.get_value())
     # parallel optimization for time-consuming tasks
-    solution = Opt.min(obj, Parameter(budget=100*dim, parallel=True, server_num=3))
+    solution = Opt.min(obj, Parameter(budget=100*dim_size, parallel=True, server_num=3))
     
 For a few seconds, the optimization is done. Then, we can visualize the optimization progress
 
@@ -95,7 +97,7 @@ We can also use ``ExpOpt`` to repeat the optimization for performance analysis, 
 
 .. code:: python
 
-    solution_list = ExpOpt.min(obj, Parameter(budget=100*dim), repeat=3, plot=True, plot_file="progress.png")
+    solution_list = ExpOpt.min(obj, Parameter(budget=100*dim_size), repeat=3, plot=True, plot_file="progress.png")
     for solution in solution_list:
         print(solution.get_x(), solution.get_value())
 
@@ -103,6 +105,12 @@ More examples are available in the **EXAMPLES** part.
 
 Releases
 --------
+`release 0.4`_
+
+- Add Dimension2 class, which provides another format to construct dimensions. Unlike Dimension class, Dimension2 allows users to specify optimization precision.
+- Add SRacosTune class, which is used to suggest/provide trials and process results for Tune (a platform based on RAY for distributed model selection and training).
+- Deprecate Python 2 support
+
 `release 0.3`_
 
 - Add a parallel implementation of SRACOS, which accelarates the optimization by asynchronous parallelization.
@@ -120,6 +128,7 @@ Releases
 - The algorithm selection is automatic. See examples in the example fold.- Default parameters work well on many problems, while parameters are fully controllable
 - Running speed optmized for Python
 
+.. _release 0.4: https://github.com/polixir/ZOOpt/releases/tag/v0.4
 .. _release 0.3: https://github.com/eyounx/ZOOpt/releases/tag/v0.3
 .. _release 0.2: https://github.com/eyounx/ZOOpt/releases/tag/v0.2.1
 .. _release 0.1: https://github.com/eyounx/ZOOpt/releases/tag/v0.1
