@@ -50,7 +50,8 @@ Ackley function is a classical function with many local minima. In 2-dimension, 
 from zoopt import Dimension, ValueType, Dimension2, Objective, Parameter, Opt, ExpOpt
 
 dim_size = 100  # dimension size
-dim = Dimension(dim_size, [[-1, 1]]*dim_size, [True]*dim_size)  # dim = Dimension2([(ValueType.CONTINUOUS, [-1, 1], 1e-6)]*dim_size)
+dim = Dimension(dim_size, [[-1, 1]]*dim_size, [True]*dim_size)  
+# dim = Dimension2([(ValueType.CONTINUOUS, [-1, 1], 1e-6)]*dim_size)
 obj = Objective(ackley, dim)
 # perform optimization
 solution = Opt.min(obj, Parameter(budget=100*dim_size))
@@ -84,6 +85,12 @@ for solution in solution_list:
 More examples are available in the `example` fold.
 
 # Releases
+
+## [release 0.4](https://github.com/eyounx/ZOOpt/releases/tag/v0.4)
+
+- Add Dimension2 class, which provides another format to construct dimensions. Unlike Dimension class, Dimension2 allows users to specify optimization precision.
+- Add SRacosTune class, which is used to suggest/provide trials and process results for [Tune](https://github.com/ray-project/ray) (a platform based on RAY for distributed model selection and training).
+- Deprecate Python 2 support
 
 ## [release 0.3](https://github.com/eyounx/ZOOpt/releases/tag/v0.3)
 
