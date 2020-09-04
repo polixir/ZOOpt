@@ -8,7 +8,7 @@ Updated by:
     Ze-Wen Li
 """
 
-from zoopt.dimension import Dimension, Dimension2
+from zoopt.dimension import Dimension, Dimension2, ValueType
 from zoopt.utils.tool_function import ToolFunction
 import copy
 import numpy as np
@@ -79,7 +79,7 @@ class RacosClassification:
                 k = remain_index_set[np.random.randint(0, len(remain_index_set))]
                 x_pos_k = self.__x_positive.get_x_index(k)
                 # continuous
-                if types[k] is True:
+                if types[k] == ValueType.CONTINUOUS:
                     x_negative = self.__negative_solution[
                         np.random.randint(0, len_negative)]
                     x_neg_k = x_negative.get_x_index(k)
@@ -175,7 +175,7 @@ class RacosClassification:
                 x_pos_k = self.__x_positive.get_x_index(k)
 
                 # continuous
-                if types[k]:
+                if types[k] == ValueType.CONTINUOUS:
                     x_negative = self.__negative_solution[np.random.randint(0, len_negative)]
                     x_neg_k = x_negative.get_x_index(k)
 
@@ -205,7 +205,7 @@ class RacosClassification:
                                     self.__negative_solution[len_negative] = itemp
                                 else:
                                     i += 1
-                # discrete
+                # discrete and grid
                 else:
                     if order_or_precision[k] is True:
                         x_negative = self.__negative_solution[np.random.randint(0, len_negative)]
@@ -236,7 +236,7 @@ class RacosClassification:
                                         self.__negative_solution[len_negative] = itemp
                                     else:
                                         i += 1
-                    else:
+                    else: # for unordered discrete or grid valuetype
                         delete = 0
                         i = 0
                         while i < len_negative:
@@ -285,9 +285,12 @@ class RacosClassification:
             x = copy.deepcopy(self.__x_positive.get_x())
             for index in self.__label_index:
                 # continuous
-                if self.__solution_space.get_type(index):
+                if self.__solution_space.get_type(index) == ValueType.CONTINUOUS:
                     x[index] = round(np.random.uniform(self.__sample_region[index][0], self.__sample_region[index][1]),
                                      gl.float_precisions[index])
+                # grid
+                elif self.__solution_space.get_type(index) == ValueType.GRID:
+                    x[index] = np.random.choice(self.__sample_region[index], 1)[0]
                 # discrete
                 else:
                     x[index] = np.random.randint(self.__sample_region[index][0], self.__sample_region[index][1] + 1)
