@@ -153,7 +153,7 @@ class RacosCommon:
         """
         self._parameter.set_negative_size(self._parameter.get_train_size() - self._parameter.get_positive_size())
         x, distinct_flag = self.distinct_sample(self._objective.get_dim(), self._data, data_num=1)
-        return x
+        return x, distinct_flag
 
     def selection(self):
         """

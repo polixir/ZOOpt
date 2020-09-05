@@ -224,7 +224,7 @@ class SRacosTune(RacosCommon):
     The class SRacosTune represents Sequential Racos algorithm for Tune. It's inherited from RacosCommon.
     """
 
-    def __init__(self, dimension, parameter):
+    def __init__(self, dimension, parameter, **kwargs):
         """
         Initialization.
 
@@ -237,10 +237,12 @@ class SRacosTune(RacosCommon):
         objective = Objective(None, dimension)
         self.set_objective(objective)
         self.set_parameters(parameter)
+        self._parameter.set_server_num(kwargs['parallel_num'])
 
         self.init_num = 0
         self.complete_num = 0
         self.semaphore = 1  # control init
+        self.live_num = 0
         self.ub = self._parameter.get_uncertain_bits()
         if self.ub is None:
             self.ub = self.choose_ub(self.get_objective())
@@ -254,14 +256,22 @@ class SRacosTune(RacosCommon):
         if self.semaphore == 0:
             return
 
+        solution = None
+
         if self.init_num < self._parameter.get_train_size():  # for init
-            solution = self.tune_init_attribute()
+            solution, distinct_flag = self.tune_init_attribute()  # TODO: It probably samples the same solution but distinct_flag is True
+            if distinct_flag is False:
+                return "FINISHED"
+            self.live_num += 1
         elif self.init_num == self._parameter.get_train_size():
             self.semaphore = 0
             self.init_num += 1
             return
-        else:
-            solution = self.sample_solution(self.ub)
+        elif self.live_num < self._parameter.get_server_num():
+            solution, distinct_flag = self.sample_solution(self.ub)
+            if distinct_flag is False:
+                return "FINISHED"
+            self.live_num += 1
 
         self.init_num += 1
         return solution
@@ -275,6 +285,7 @@ class SRacosTune(RacosCommon):
         :return: best solution so far
         """
         self.complete_num += 1
+        self.live_num -= 1
         if self.complete_num < self._parameter.get_train_size():
             solution.set_value(result)
             self._data.append(solution)
@@ -305,9 +316,10 @@ class SRacosTune(RacosCommon):
         else:
             solution, distinct_flag = self.distinct_sample(self._objective.get_dim(), sampled_data)
 
-        sampled_data.append(solution)
+        if distinct_flag is True:
+            sampled_data.append(solution)
 
-        return solution
+        return solution, distinct_flag
 
     def update_classifier(self, solution, strategy='WR'):
         stopping_criterion = self._parameter.get_stopping_criterion()
