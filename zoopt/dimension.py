@@ -219,6 +219,7 @@ class Dimension(object):
 
 
 class ValueType(enumerate):
+    GRID = 2
     CONTINUOUS = 1
     DISCRETE = 0
 
@@ -238,14 +239,15 @@ class Dimension2(object):
                                         e.g.: (ValueType.CONTINUOUS, [0, 1], 1e-6)
                     for discrete dimension: (type, range, has_partial_order)
                                         e.g.: (ValueType.DISCRETE, [0, 1], False)
+                    for grid dimension: (type, values)
+                                        e.g.: (ValueType.GRID, ['first value', 'second value'])
 
         """
         gl.float_precisions = []
         self._size = len(dim_list)
         self._regions = list(map(lambda x: x[1], dim_list))
-        # True means continuous, False means discrete
-        self._types = list(map(lambda x: x[0] == True, dim_list))
-        self._order_or_precision = list(map(lambda x: x[2], dim_list))
+        self._types = list(map(lambda x: x[0], dim_list))
+        self._order_or_precision = list(map(lambda x: x[2] if len(x) == 3 else None, dim_list))
 
         for _dim in dim_list:
             if _dim[0] == ValueType.CONTINUOUS:
@@ -347,7 +349,9 @@ class Dimension2(object):
         """
         x = []
         for i in range(self._size):
-            if self._types[i]:
+            if self._types[i] == ValueType.GRID:
+                value = np.random.choice(self._regions[i], 1)[0]
+            elif self._types[i] == ValueType.CONTINUOUS:
                 value = round(np.random.uniform(self._regions[i][0], self._regions[i][1]), gl.float_precisions[i])
             else:
                 value = np.random.randint(self._regions[i][0], self._regions[i][1] + 1)
@@ -364,8 +368,10 @@ class Dimension2(object):
         """
         number = 1
         for i in range(self._size):
-            if self._types[i]:
+            if self._types[i] == ValueType.CONTINUOUS:
                 return False, 0
+            elif self._types[i] == ValueType.GRID:
+                number *= len(self._regions[i])
             else:
                 number *= self._regions[i][1] - self._regions[i][0] + 1
         return True, number

@@ -88,7 +88,7 @@ and attachment
         if len(self.__x) != len(sol_x):
             return False
         for i in range(len(self.__x)):
-            if abs(self.__x[i] - sol_x[i]) > gl.precision:
+            if not self.__x[i] == sol_x[i]:
                 return False
         return True
 
