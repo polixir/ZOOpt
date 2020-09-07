@@ -271,7 +271,8 @@ class Dimension2(object):
 
                 gl.float_precisions.append(_precision_len)
             else:
-                gl.float_precisions.append(None)
+                # gl.float_precisions.append(None)
+                pass
 
         return
 

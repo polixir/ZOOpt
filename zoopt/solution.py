@@ -82,14 +82,20 @@ and attachment
         """
         sol_x = sol.get_x()
         sol_value = sol.get_value()
-        if sol_value != nan and self.__value != nan:
-            if abs(self.__value - sol_value) > gl.precision:
+        if sol_value is not nan and self.__value is not nan:
+            if abs(self.__value - sol_value) > (pow(10, -1 * max(gl.float_precisions)) if gl.float_precisions else gl.precision):
                 return False
         if len(self.__x) != len(sol_x):
             return False
         for i in range(len(self.__x)):
-            if not self.__x[i] == sol_x[i]:
+            if not type(self.__x[i]) == type(sol_x[i]):
                 return False
+            if isinstance(self.__x[i], str):
+                if not self.__x[i] == sol_x[i]:
+                    return False
+            else:
+                if abs(self.__x[i] - sol_x[i]) > (pow(10, -1 * gl.float_precisions[i]) if gl.float_precisions else gl.precision):
+                    return False
         return True
 
     def exist_equal(self, sol_set):
