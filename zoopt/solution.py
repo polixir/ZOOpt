@@ -3,6 +3,9 @@ This module contains the class Solution.
 
 Author:
     Yu-Ren Liu, Xiong-Hui Chen
+
+Updated by:
+    Ze-Wen Li
 """
 import copy
 
@@ -94,8 +97,13 @@ and attachment
                 if not self.__x[i] == sol_x[i]:
                     return False
             else:
-                if abs(self.__x[i] - sol_x[i]) > (pow(10, -1 * gl.float_precisions[i]) if gl.float_precisions else gl.precision):
-                    return False
+                if gl.float_precisions:  # for Dimension2 class
+                    if gl.float_precisions[i] is not None:
+                        if abs(self.__x[i] - sol_x[i]) > pow(10, -1 * gl.float_precisions[i]):
+                            return False
+                else:  # for Dimension class
+                    if abs(self.__x[i] - sol_x[i]) > gl.precision:
+                        return False
         return True
 
     def exist_equal(self, sol_set):
