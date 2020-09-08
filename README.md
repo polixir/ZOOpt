@@ -27,6 +27,37 @@ $ python setup.py build
 $ python setup.py install
 ```
 
+## Quick tutorial for `Dimension2` class
+Since release 0.4.1, `Dimension2` class in ZOOpt supports constructing THREE types of dimensions, 
+i.e.: `ValueType.CONTINUOUS`, `ValueType.DISCRETE`, and `ValueType.GRID`.
+
+For **continuous dimensions**, the arguments should be like `(ValueType.CONTINUOUS, range, float_precision)`. <br>
+Where `ValueType.CONTINUOUS` indicates this dimension is continuous. 
+`range` is a list that indicates the search space, such as `[min, max]` (endpoints are inclusive). 
+`float_precision` means the precision of this dimension, e.g., if it is set to 1e-6, 0.001, or 10, the answer will be accurate to six decimal places, three decimal places, or tens places.
+
+For **discrete dimensions**, the arguments should be like `(ValueType.DISCRETE, range, has_partial_order)`. <br>
+Where `ValueType.DISCRETE` indicates this dimension is discrete. 
+`range` is also a list that indicates the search space, such as `[min, max]` (endpoints are inclusive), but **ONLY integers can be sampled**.
+`has_partial_order` means whether this dimension is ordered. `True` is for an ordered relation and `False` means not.
+
+For **grid dimensions**, the arguments should be like `(ValueType.GRID, grid_list)`. <br>
+Where `ValueType.GRID` indicates this dimension is a grid, which is convenient to instance-wise search.
+`grid_list` is a list whose values can be *str*, *int*, *float*, etc. All values in this list will be sampled like grid search.
+
+For instance, you can define your own dimensions like:
+```python
+dim_list = [
+    (ValueType.CONTINUOUS, [-1, 1], 1e-6),
+    (ValueType.DISCRETE, [-10, 10], False),
+    (ValueType.DISCRETE, [10, 100], True),
+    (ValueType.GRID, [64, 128, 256, 512, 1024]),
+    (ValueType.GRID, ["relu", "leaky_relu", "tanh", "sigmoid"])
+]
+
+dim = Dimension2(dim_list)
+```
+
 ## A simple example
 
 We define the Ackley function for minimization (note that this function is for arbitrary dimensions, determined by the solution)
@@ -85,6 +116,12 @@ for solution in solution_list:
 More examples are available in the `example` fold.
 
 # Releases
+
+## [release 0.4.1](https://github.com/polixir/ZOOpt/releases/tag/v0.4.1)
+
+- Fix known bugs when sampling for Tune and compatible with the latest Ray 0.8.7. 
+It is strongly recommended to update to this version if you are leveraging Ray.
+- Add ValueType.GRID for instance-wise search in Dimension2 class.
 
 ## [release 0.4](https://github.com/eyounx/ZOOpt/releases/tag/v0.4)
 
