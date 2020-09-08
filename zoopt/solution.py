@@ -86,20 +86,20 @@ and attachment
         sol_x = sol.get_x()
         sol_value = sol.get_value()
         if sol_value is not nan and self.__value is not nan:
-            if abs(self.__value - sol_value) >= (pow(10, -1 * max(gl.float_precisions)) if gl.float_precisions else gl.precision):
+            if abs(self.__value - sol_value) >= gl.precision:
                 return False
         if len(self.__x) != len(sol_x):
             return False
         for i in range(len(self.__x)):
             if not type(self.__x[i]) == type(sol_x[i]):
                 return False
-            if isinstance(self.__x[i], str):
-                if not self.__x[i] == sol_x[i]:
-                    return False
             else:
                 if gl.float_precisions:  # for Dimension2 class
-                    if gl.float_precisions[i] is not None:
+                    if gl.float_precisions[i] is not None:  # CONTINUOUS
                         if abs(self.__x[i] - sol_x[i]) >= pow(10, -1 * gl.float_precisions[i]):
+                            return False
+                    else:  # DISCRETE or GRID
+                        if not self.__x[i] == sol_x[i]:
                             return False
                 else:  # for Dimension class
                     if abs(self.__x[i] - sol_x[i]) >= gl.precision:
