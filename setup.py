@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='zoopt',
-    version='0.4.0',
+    version='0.4.1',
     description=(
         'A Python Package for Zeroth-Order Optimization'
     ),
@@ -15,7 +15,7 @@ setup(
     license='MIT License',
     packages=find_packages(),
     platforms=["all"],
-    url='https://github.com/eyounx/ZOOpt',
+    url='https://github.com/polixir/ZOOpt',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Operating System :: OS Independent',
