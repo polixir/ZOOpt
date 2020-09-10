@@ -27,6 +27,8 @@ class RacosCommon:
         # Solution set
         # Random sampled solutions construct self._data
         self._data = []
+        # Save solutions with distinct x for tune init
+        self._init_data = []
         # self._positive_data are best-positive_size solutions set
         self._positive_data = []
         # self._negative_data are the other solutions
@@ -152,9 +154,9 @@ class RacosCommon:
         :return: sample x
         """
         self._parameter.set_negative_size(self._parameter.get_train_size() - self._parameter.get_positive_size())
-        x, distinct_flag = self.distinct_sample(self._objective.get_dim(), self._data, data_num=1)
+        x, distinct_flag = self.distinct_sample(self._objective.get_dim(), self._init_data, data_num=1)
         if distinct_flag:
-            self._data.append(x)
+            self._init_data.append(x)
         return x, distinct_flag
 
     def selection(self):
@@ -169,7 +171,7 @@ class RacosCommon:
         """
 
         new_data = sorted(self._data, key=lambda x: x.get_value())
-        self._data = new_data[0:self._parameter.get_train_size()]
+        self._data = new_data[0: self._parameter.get_train_size()]
         self._positive_data = new_data[0: self._parameter.get_positive_size()]
         self._negative_data = new_data[
             self._parameter.get_positive_size(): self._parameter.get_train_size()]

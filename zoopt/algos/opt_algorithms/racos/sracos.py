@@ -259,7 +259,7 @@ class SRacosTune(RacosCommon):
         solution = None
 
         if self.init_num < self._parameter.get_train_size():  # for init
-            solution, distinct_flag = self.tune_init_attribute()  # TODO: It probably samples the same solution but distinct_flag is True
+            solution, distinct_flag = self.tune_init_attribute()
             if distinct_flag is False:
                 return "FINISHED"
             self.live_num += 1
@@ -286,16 +286,16 @@ class SRacosTune(RacosCommon):
         """
         self.complete_num += 1
         self.live_num -= 1
+        solution.set_value(result)
         if self.complete_num < self._parameter.get_train_size():
-            solution.set_value(result)
             self._data.append(solution)
         elif self.complete_num == self._parameter.get_train_size():
-            solution.set_value(result)
             self._data.append(solution)
             self.selection()
+            best_solution_so_far = self.update_classifier(solution)
             self.semaphore = 1
+            return best_solution_so_far
         else:
-            solution.set_value(result)
             best_solution_so_far = self.update_classifier(solution)
             return best_solution_so_far
 
@@ -315,9 +315,6 @@ class SRacosTune(RacosCommon):
                 classifier, sampled_data, True, self._parameter.get_train_size())
         else:
             solution, distinct_flag = self.distinct_sample(self._objective.get_dim(), sampled_data)
-
-        if distinct_flag is True:
-            sampled_data.append(solution)
 
         return solution, distinct_flag
 
