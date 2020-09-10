@@ -38,11 +38,7 @@ class RacosClassification:
         self.__x_positive = None
         self.__uncertain_bit = ub
 
-        regions = dim.get_regions()
-        for i in range(dim.get_size()):
-            temp = [regions[i][0], regions[i][1]]
-            self.__sample_region.append(temp)
-        return
+        self.__sample_region = copy.deepcopy(dim.get_regions())
 
     def reset_classifier(self):
         """
@@ -79,7 +75,7 @@ class RacosClassification:
                 k = remain_index_set[np.random.randint(0, len(remain_index_set))]
                 x_pos_k = self.__x_positive.get_x_index(k)
                 # continuous
-                if types[k] == ValueType.CONTINUOUS:
+                if types[k] is True:
                     x_negative = self.__negative_solution[
                         np.random.randint(0, len_negative)]
                     x_neg_k = x_negative.get_x_index(k)
