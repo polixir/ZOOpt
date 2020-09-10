@@ -370,6 +370,8 @@ class Dimension2(object):
         for i in range(self._size):
             if self._types[i] == ValueType.CONTINUOUS:
                 number *= (self._regions[i][1] - self._regions[i][0]) / self._order_or_precision[i]
+                if number == np.inf:
+                    return False, 0
             elif self._types[i] == ValueType.GRID:
                 number *= len(self._regions[i])
             else:
