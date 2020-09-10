@@ -75,7 +75,7 @@ class TestDimension2(object):
         dim1 = Dimension2([(ValueType.CONTINUOUS, [-1, 1], 1e-6),
                            (ValueType.CONTINUOUS, [-1, 1], 1e-6)])
         limited, number = dim1.limited_space()
-        assert limited is False and number == 0
+        assert limited is True and number == 4e12
         dim2 = Dimension2([(ValueType.DISCRETE, [-1, 1], False),
                            (ValueType.DISCRETE, [-1, 1], False)])
         limited, number = dim2.limited_space()
