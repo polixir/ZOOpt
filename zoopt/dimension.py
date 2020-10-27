@@ -247,7 +247,8 @@ class Dimension2(object):
         self._size = len(dim_list)
         self._regions = list(map(lambda x: x[1], dim_list))
         self._types = list(map(lambda x: x[0], dim_list))
-        self._order_or_precision = list(map(lambda x: x[2] if len(x) == 3 else None, dim_list))
+        self._order_or_precision = list(map(lambda x: x[2] if len(x) == 3 else None,
+                                            dim_list))  # Note: for grid valuetype, len(x)=2
 
         for _dim in dim_list:
             if _dim[0] == ValueType.CONTINUOUS:

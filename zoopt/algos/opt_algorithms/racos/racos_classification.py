@@ -162,12 +162,12 @@ class RacosClassification:
             len_negative = len(self.__negative_solution)
             index_set = list(range(self.__solution_space.get_size()))
             remain_index_set = list(range(self.__solution_space.get_size()))
-            types = self.__solution_space.get_types()
+            types = self.__solution_space.get_types()  # continuous, discrete, grid
             order_or_precision = self.__solution_space.get_order_or_precision()
             while len_negative > 0:
                 if len(remain_index_set) == 0:
                     ToolFunction.log('ERROR: sampled two same solutions, please raise issues on github')
-                k = remain_index_set[np.random.randint(0, len(remain_index_set))]
+                k = remain_index_set[np.random.randint(0, len(remain_index_set))]  # randomly choose a index k
                 x_pos_k = self.__x_positive.get_x_index(k)
 
                 # continuous

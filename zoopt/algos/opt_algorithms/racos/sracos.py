@@ -307,13 +307,13 @@ class SRacosTune(RacosCommon):
         :return: a solution containing trial
         """
         sampled_data = self._positive_data + self._negative_data
-        if np.random.random() < self._parameter.get_probability():
+        if np.random.random() < self._parameter.get_probability():  # exploitation
             classifier = RacosClassification(
                 self._objective.get_dim(), self._positive_data, self._negative_data, ub)
             classifier.mixed_classification()
             solution, distinct_flag = self.distinct_sample_classifier(
                 classifier, sampled_data, True, self._parameter.get_train_size())
-        else:
+        else:  # exploration
             solution, distinct_flag = self.distinct_sample(self._objective.get_dim(), sampled_data)
 
         return solution, distinct_flag
