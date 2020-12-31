@@ -29,6 +29,7 @@ class RacosCommon:
         self._data = []
         # Save solutions with distinct x for tune init
         self._init_data = []
+        self._need_copy = True
         # self._positive_data are best-positive_size solutions set
         self._positive_data = []
         # self._negative_data are the other solutions
@@ -154,6 +155,24 @@ class RacosCommon:
         :return: sample x
         """
         self._parameter.set_negative_size(self._parameter.get_train_size() - self._parameter.get_positive_size())
+        if self._need_copy:
+            self._data_temp = copy.deepcopy(self._parameter.get_init_samples())
+            self._need_copy = False
+            self._iteration_num = self._parameter.get_train_size()
+        if self._data_temp is not None and self._best_solution is None:
+            size = min(len(self._data_temp), self._iteration_num)
+            if size > 0:
+                if isinstance(self._data_temp[0], Solution) is False:
+                    x = self._objective.construct_solution(self._data_temp[0])
+                else:
+                    x = self._data_temp[0]
+                del self._data_temp[0]
+                self._iteration_num -= 1
+                self._init_data.append(x)
+                if math.isnan(x.get_value()):
+                    return x, True
+                else:
+                    return self.tune_init_attribute()
         x, distinct_flag = self.distinct_sample(self._objective.get_dim(), self._init_data, data_num=1)
         if distinct_flag:
             self._init_data.append(x)
