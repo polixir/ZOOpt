@@ -143,7 +143,7 @@ class SRacos(RacosCommon):
             return end + 1
         if end == begin + 1:
             return end
-        mid = (begin + end) // 2
+        mid = begin + (end - begin) // 2
         if x_value <= iset[mid].get_value():
             return self.binary_search(iset, x, begin, mid)
         else:
@@ -369,7 +369,7 @@ class SRacosTune(RacosCommon):
             return end + 1
         if end == begin + 1:
             return end
-        mid = (begin + end) // 2
+        mid = begin + (end - begin) // 2
         if x_value <= iset[mid].get_value():
             return self.binary_search(iset, x, begin, mid)
         else:
