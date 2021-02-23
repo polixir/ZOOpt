@@ -289,9 +289,8 @@ class SRacosTune(RacosCommon):
         solution.set_value(result)
         if self.complete_num < self._parameter.get_train_size():
             self._data.append(solution)
-        elif self.complete_num == self._parameter.get_train_size():
-            self._data.append(solution)
             self.selection()
+        elif self.complete_num == self._parameter.get_train_size():
             best_solution_so_far = self.update_classifier(solution)
             self.semaphore = 1
             return best_solution_so_far

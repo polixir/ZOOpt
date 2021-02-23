@@ -191,9 +191,8 @@ class RacosCommon:
 
         new_data = sorted(self._data, key=lambda x: x.get_value())
         self._data = new_data[0: self._parameter.get_train_size()]
-        self._positive_data = new_data[0: self._parameter.get_positive_size()]
-        self._negative_data = new_data[
-            self._parameter.get_positive_size(): self._parameter.get_train_size()]
+        self._positive_data = self._data[0: self._parameter.get_positive_size()]
+        self._negative_data = self._data[self._parameter.get_positive_size():]
         self._best_solution = self._positive_data[0]
         return
 
