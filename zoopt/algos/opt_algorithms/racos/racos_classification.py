@@ -38,7 +38,10 @@ class RacosClassification:
         self.__x_positive = None
         self.__uncertain_bit = ub
 
-        self.__sample_region = copy.deepcopy(dim.get_regions())
+        regions = dim.get_regions()
+        for i in range(dim.get_size()):
+            temp = [regions[i][0], regions[i][1]]
+            self.__sample_region.append(temp)
 
     def reset_classifier(self):
         """
