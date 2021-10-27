@@ -117,6 +117,11 @@ More examples are available in the `example` fold.
 
 # Releases
 
+## [release 0.4.2](https://github.com/polixir/ZOOpt/releases/tag/v0.4.2)
+
+- Fix known bugs that may cause terrible outcomes while optimizing.
+It is strongly recommended to upgrade to the latest version.
+
 ## [release 0.4.1](https://github.com/polixir/ZOOpt/releases/tag/v0.4.1)
 
 - Fix known bugs when sampling for Tune and compatible with the latest Ray 0.8.7. 
