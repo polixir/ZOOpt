@@ -22,7 +22,7 @@ ZOOpt implements some state-of-the-art zeroth-order optimization methods and the
 
 .. _Distributed ZOOpt : https://github.com/eyounx/ZOOsrv
 
-**Citation**: Yu-Ren Liu, Yi-Qi Hu, Hong Qian, Yang Yu, Chao Qian. ZOOpt: Toolbox for Derivative-Free Optimization. CORR abs/1801.00329
+**Citation**: Yu-Ren Liu, Yi-Qi Hu, Hong Qian, Yang Yu, Chao Qian. ZOOpt: Toolbox for Derivative-Free Optimization. SCIENCE CHINA Information Sciences, 2022. CORR abs/1801.00329
 (Features in this article are from version 0.2)
 
 
