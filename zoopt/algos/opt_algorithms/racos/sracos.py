@@ -286,6 +286,11 @@ class SRacosTune(RacosCommon):
         """
         self.complete_num += 1
         self.live_num -= 1
+
+        # Invalid results (nan/inf) should not be added as data
+        if np.isnan(result) or np.isinf(result):
+            return self._best_solution
+
         solution.set_value(result)
         if self.complete_num < self._parameter.get_train_size():
             self._data.append(solution)
