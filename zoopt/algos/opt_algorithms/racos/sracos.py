@@ -289,6 +289,8 @@ class SRacosTune(RacosCommon):
 
         # Invalid results (nan/inf) should not be added as data
         if np.isnan(result) or np.isinf(result):
+            if self.complete_num == self._parameter.get_train_size():
+                self.semaphore = 1
             return self._best_solution
 
         solution.set_value(result)
