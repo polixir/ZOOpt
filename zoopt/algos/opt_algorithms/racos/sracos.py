@@ -253,27 +253,41 @@ class SRacosTune(RacosCommon):
         Suggest a trial for Tune, including init trials(decided by `budget`)
 
         """
-        if self.semaphore == 0:
+        if self.semaphore == 0 and self.live_num > 0:
+            # If there are no live samples and suggestion is paused, this means that
+            # the initial set of samples has completed, but contained some invalid
+            # solutions. We should suggest another trial in this case.
             return
 
         solution = None
 
-        if self.init_num < self._parameter.get_train_size():  # for init
+        if self.init_num == self._parameter.get_train_size():  # done initializing
+            # Pause suggestions until all initial trials have completed
+            self.semaphore = 0
+            self.init_num += 1
+            return
+        elif (
+            self.init_num < self._parameter.get_train_size()
+            or self.complete_num < self._parameter.get_train_size()
+        ):
+            # Initialize trials
+            # This also handles the case where initial trial collection runs into an
+            # invalid result (nan/inf), and more trials need to be generated.
             solution, distinct_flag = self.tune_init_attribute()
             if distinct_flag is False:
                 return "FINISHED"
             self.live_num += 1
-        elif self.init_num == self._parameter.get_train_size():
-            self.semaphore = 0
             self.init_num += 1
-            return
         elif self.live_num < self._parameter.get_server_num():
             solution, distinct_flag = self.sample_solution(self.ub)
             if distinct_flag is False:
                 return "FINISHED"
             self.live_num += 1
+            self.init_num += 1
+        # Else, all initial samples have been completed, but there are already
+        # `server_num` live samples that need to finish before new suggesting
+        # new samples (concurrency limiting).
 
-        self.init_num += 1
         return solution
 
     def complete(self, solution, result):
@@ -284,15 +298,14 @@ class SRacosTune(RacosCommon):
         :param result: evaluated result of solution
         :return: best solution so far
         """
-        self.complete_num += 1
         self.live_num -= 1
 
         # Invalid results (nan/inf) should not be added as data
         if np.isnan(result) or np.isinf(result):
-            if self.complete_num == self._parameter.get_train_size():
-                self.semaphore = 1
             return self._best_solution
 
+        # Only increment `complete_num` on valid solutions
+        self.complete_num += 1
         solution.set_value(result)
         if self.complete_num < self._parameter.get_train_size():
             self._data.append(solution)
